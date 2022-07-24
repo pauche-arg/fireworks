@@ -1,0 +1,74 @@
+<html>
+<head>
+  <title>Fireworks!</title>
+</head>
+<body>
+<div id="fireworkContainer"></div>
+<script type="text/javascript" src="jquery-3.3.1.min.js"></script> 
+<script type="text/javascript">	
+
+var socket;
+
+var fireworkHeight = [65, 130, 260]
+
+	$('#btn').click(function(){
+	createFirework();
+	
+	});
+
+
+function setIntervalImmediately(func, interval) {
+  func();
+  return setInterval(func, interval);
+}
+
+function createFirework() {
+var fireworkType = Math.floor(Math.random() * 2) + 1;
+var fireworkFile = Math.floor(Math.random() * 14);
+
+
+var firework = $(" <div />" )
+    .css({'top': 625, 'left' : Math.random() * 1280, 'margin-left' : "40px", 'position' : 'absolute', 'image-rendering': 'pixelated', "z-index" : "50", "background-image" : "url('./fireworks-" + fireworkType  + "/fireworks" + fireworkFile + ".png')",   "width" : fireworkHeight[fireworkType] + "px", "height" : fireworkHeight[fireworkType] + "px" })
+    .appendTo($( "#fireworkContainer" ))
+    .animate({ 
+        'top' : Math.floor(Math.random() * 70) + 25,
+      }, 1050 , "linear", function() {
+	  		var fireani = {
+        frame_height: fireworkHeight[fireworkType],
+        num_frames: 8,
+		loop_frame: 8,
+		frame_duration: 100,
+		cur_frame: 0
+		};
+		
+		var audio = new Audio('firework' + fireworkType + '.wav')
+		audio.volume = 0.2;
+		audio.play();
+		
+
+
+  var intervalId = window.setIntervalImmediately(
+    function intervalio() {
+      firework.css( 'background-position-y',
+                      (-fireani.frame_height * fireani.cur_frame ) + 'px');
+					
+      fireani.cur_frame = (fireani.cur_frame + 1) % fireani.num_frames;
+      if (fireani.cur_frame == 0) firework.remove() && clearInterval(intervalId);
+    },
+    fireani.frame_duration
+  )
+  
+
+});
+}
+
+
+$('body').keyup(function(e){
+   if(e.keyCode == 32)
+    createFirework();
+});
+
+
+</script>
+</body>
+</html>
